@@ -1,18 +1,29 @@
+import { Coord } from '../utils/cell.util';
+
 interface BoardCellProps {
-  x: number;
-  y: number;
+  coord: Coord;
   num: number;
-  memos: boolean[];
+  candidates: boolean[];
 }
 
-export const BoardCell = ({ x, y, num }: BoardCellProps) => {
+export const BoardCell = ({ coord, num, candidates }: BoardCellProps) => {
   return (
     <div
-      className={`box-border h-10 w-10 leading-10 text-center ${x % 3 == 2 ? 'border-r-2' : ''} ${
-        y % 3 == 2 ? 'border-b-2' : ''
-      }`}
+      className={`box-border h-12 w-12 text-center border-2 ${
+        coord.x % 3 == 2 ? 'border-r-black' : ''
+      } ${coord.y % 3 == 2 ? 'border-b-black' : ''}`}
     >
-      {num}
+      {num ? (
+        <span className="text-5xl">{num}</span>
+      ) : (
+        <div className="grid grid-cols-3">
+          {candidates.map((candidate, i) => (
+            <div className="text-xs" key={`candidates-${i}`}>
+              {candidate ? i + 1 : '-'}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
