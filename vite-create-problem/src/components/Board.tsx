@@ -4,7 +4,14 @@ import { useBoard } from '../utils/board.util';
 interface BoardProps {}
 
 export const Board = ({}: BoardProps) => {
-  const { boardData, setRandomNumberInCell } = useBoard();
+  const {
+    boardData,
+    filledCellCount,
+    setRandomNumberInCell,
+    startCreateProblem,
+    stopCreateProblem,
+    setNumberInCell,
+  } = useBoard();
 
   return (
     <>
@@ -18,13 +25,19 @@ export const Board = ({}: BoardProps) => {
                   coord={{ y, x }}
                   num={cell.num}
                   candidates={cell.candidates}
+                  setNumberInCell={setNumberInCell}
                 />
               ))}
             </div>
           ))}
         </div>
       </div>
-      <button onClick={setRandomNumberInCell}>랜덤 숫자</button>
+      <div className="flex flex-col">
+        <button onClick={setRandomNumberInCell}>Random</button>
+        <button onClick={startCreateProblem}>Start</button>
+        <button onClick={stopCreateProblem}>Stop</button>
+      </div>
+      <div>{filledCellCount}</div>
     </>
   );
 };
