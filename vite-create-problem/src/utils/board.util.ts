@@ -26,6 +26,7 @@ export const useBoard = () => {
       })
     );
     setBoardData(newBoardData);
+    setFilledCellCount(0);
   };
 
   useEffect(() => {
@@ -49,13 +50,12 @@ export const useBoard = () => {
         break;
       } else if (status === 'error') {
         initBoard();
-        setFilledCellCount(0);
         setBoardStatus('running');
       }
     }
   }, [boardStatus, boardData]);
 
-  const setNumberInCell = (coord: Coord, num: number) => {
+  const setNumberInCell = (coord: Coord, num: number, shouldSolveProblem: boolean = true) => {
     // 중복 좌표 제거를 위해
     const changedCoords = new Set<string>([]);
     const changedYCell: Cell[] = [];
@@ -107,19 +107,22 @@ export const useBoard = () => {
       }
     });
 
-    const hiddenSingleYCell = checkHiddenSingle(changedYCell);
-    if (hiddenSingleYCell) setNumberInCell(hiddenSingleYCell[0].coord, hiddenSingleYCell[1]);
-    const hiddenSingleXCell = checkHiddenSingle(changedXCell);
-    if (hiddenSingleXCell) setNumberInCell(hiddenSingleXCell[0].coord, hiddenSingleXCell[1]);
-    const hiddenSingleBoxCell = checkHiddenSingle(changedBoxCell);
-    if (hiddenSingleBoxCell) setNumberInCell(hiddenSingleBoxCell[0].coord, hiddenSingleBoxCell[1]);
+    if (shouldSolveProblem) {
+      const hiddenSingleYCell = checkHiddenSingle(changedYCell);
+      if (hiddenSingleYCell) setNumberInCell(hiddenSingleYCell[0].coord, hiddenSingleYCell[1]);
+      const hiddenSingleXCell = checkHiddenSingle(changedXCell);
+      if (hiddenSingleXCell) setNumberInCell(hiddenSingleXCell[0].coord, hiddenSingleXCell[1]);
+      const hiddenSingleBoxCell = checkHiddenSingle(changedBoxCell);
+      if (hiddenSingleBoxCell)
+        setNumberInCell(hiddenSingleBoxCell[0].coord, hiddenSingleBoxCell[1]);
 
-    const nakedSingleCells = checkNakedSingle(changedCells);
-    if (nakedSingleCells.length) {
-      nakedSingleCells.forEach((cell) => {
-        const hiddenNumber = cell.getRemainCandidatesNumber()[0];
-        setNumberInCell(cell.coord, hiddenNumber);
-      });
+      const nakedSingleCells = checkNakedSingle(changedCells);
+      if (nakedSingleCells.length) {
+        nakedSingleCells.forEach((cell) => {
+          const hiddenNumber = cell.getRemainCandidatesNumber()[0];
+          setNumberInCell(cell.coord, hiddenNumber);
+        });
+      }
     }
   };
 

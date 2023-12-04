@@ -1,5 +1,10 @@
 import { BoardCell } from './BoardCell';
 import { useBoard } from '../utils/board.util';
+// import level1 from '../assets/problems/level1/398683497.json';
+// import level2 from '../assets/problems/level2/139914293.json';
+// import level3 from '../assets/problems/level3/5482683914.json';
+import level4 from '../assets/problems/level4/5226551585.json';
+import { useEffect } from 'react';
 
 interface BoardProps {}
 
@@ -8,10 +13,23 @@ export const Board = ({}: BoardProps) => {
     boardData,
     filledCellCount,
     setRandomNumberInCell,
+    setNumberInCell,
     startCreateProblem,
     stopCreateProblem,
-    setNumberInCell,
   } = useBoard();
+  const problem = level4;
+
+  useEffect(() => {
+    if (problem) {
+      problem.forEach((row, y) =>
+        row.forEach((num, x) => {
+          if (num) {
+            setNumberInCell({ y, x }, num, false);
+          }
+        })
+      );
+    }
+  }, []);
 
   return (
     <>
